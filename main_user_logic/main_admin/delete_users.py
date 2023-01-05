@@ -5,6 +5,17 @@ from aiogram.dispatcher import FSMContext
 from .utils import WorkWithUserMainAdmin
 
 
+@dp.message_handler(commands=['cansel'], state='*')
+async def cansel_add_new_event(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return None
+
+    await message.reply("Отменена")
+
+    await state.finish()
+
+
 async def start_delete_admin_main_admin(callback_query: types.CallbackQuery):
     if callback_query.data == "delete_admin_main_admin":
         await bot.send_message(callback_query.from_user.id, "Введите id")

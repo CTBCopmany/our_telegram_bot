@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.utils import executor
 from control_data import UserData
+from aiogram.dispatcher import FSMContext
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -17,6 +18,17 @@ async def process_start_command(message: types.Message):
         user_data.add_user(message.from_user.id,
                            message.from_user.username,
                            message.from_user.full_name)
+
+
+@dp.message_handler(commands=['cansel'], state='*')
+async def cansel_add_new_event(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return None
+
+    await message.reply("Отменена")
+
+    await state.finish()
 
 
 @dp.message_handler(commands=['menu'])
@@ -37,9 +49,11 @@ async def process_start_command(message: types.Message):
 
 @dp.callback_query_handler(lambda c: c.data[:4] == 'user')
 async def process_callback_button1(callback_query: types.CallbackQuery):
+    await callback_query.message.delete()
     if callback_query.data == "user_main_admin":
         await menu_main_admin(callback_query)
 
 
 if __name__ == '__main__':
+    UserData.create_db()
     executor.start_polling(dp)

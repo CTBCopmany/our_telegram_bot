@@ -11,3 +11,6 @@ dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
 path = Path(__file__).parent
+
+user_data_url = """Your user data url"""
+event_data_url = """Your event data url"""
